@@ -16,7 +16,7 @@ O edifício da FAFEFIFOR possui dois pavimentos (térreo e primeiro andar), com 
 
 Este trabalho cobre as duas partes do enunciado:
 
-- **Parte 1 — Planejamento:** cálculo das sub-redes a partir do bloco público `200.47.132.0/22` (método **Leftmost**, um `/26` por VLAN pública) e da tabela de endereçamento estático dos dispositivos.
+- **Parte 1 — Planejamento:** cálculo das sub-redes a partir do bloco público `200.47.132.0/22` (um `/26` por VLAN pública) e da tabela de endereçamento estático dos dispositivos.
 - **Parte 2 — Implantação:** VLANs e troncos nos switches Cisco, roteamento inter-VLAN (Router-on-a-Stick) com NAT, servidores Linux (DHCP, DNS/FTP) e monitoramento com **Zabbix** (SNMP + Agent).
 
 ## Topologia do laboratório
@@ -57,7 +57,7 @@ Fachada do edifício da FAFEFIFOR:
 
 ## Plano de endereçamento
 
-A faculdade adquiriu o bloco **`200.47.132.0/22`** (faixa `200.47.132.0` a `200.47.135.255`, máscara `255.255.252.0`). As VLANs públicas (2, 10, 20, 30 e 40) recebem um `/26` cada, distribuídos pelo método **Leftmost**, com a **VLAN 2 (Servidores) recebendo o primeiro bloco**. As VLANs WLAN (50) e GERENCIA (99) usam faixas privadas: `172.16.0.0/16` (via DHCP) e `192.168.100.0/24` (estático), respectivamente.
+A faculdade adquiriu o bloco **`200.47.132.0/22`** (faixa `200.47.132.0` a `200.47.135.255`, máscara `255.255.252.0`). As VLANs públicas (2, 10, 20, 30 e 40) recebem um `/26` cada, conforme a distribuição definida na imagem de endereçamento. A **VLAN 2 (Servidores) recebe o primeiro bloco**. As VLANs WLAN (50) e GERENCIA (99) usam faixas privadas: `172.16.0.0/16` (via DHCP) e `192.168.100.0/24` (estático), respectivamente.
 
 ### Tabela 1 — VLANs
 
@@ -76,10 +76,10 @@ A faculdade adquiriu o bloco **`200.47.132.0/22`** (faixa `200.47.132.0` a `200.
 | ID VLAN | Sub-rede (IPv4) | Hosts (IPv4) | Broadcast (IPv4) |
 | --- | --- | --- | --- |
 | 2 | `200.47.132.0/26` | `200.47.132.1` – `200.47.132.62` | `200.47.132.63` |
-| 10 | `200.47.132.64/26` | `200.47.132.65` – `200.47.132.126` | `200.47.132.127` |
-| 20 | `200.47.132.128/26` | `200.47.132.129` – `200.47.132.190` | `200.47.132.191` |
-| 30 | `200.47.132.192/26` | `200.47.132.193` – `200.47.132.254` | `200.47.132.255` |
-| 40 | `200.47.133.0/26` | `200.47.133.1` – `200.47.133.62` | `200.47.133.63` |
+| 10 | `200.47.134.0/26` | `200.47.134.1` – `200.47.134.62` | `200.47.134.63` |
+| 20 | `200.47.133.0/26` | `200.47.133.1` – `200.47.133.62` | `200.47.133.63` |
+| 30 | `200.47.135.0/26` | `200.47.135.1` – `200.47.135.62` | `200.47.135.63` |
+| 40 | `200.47.132.128/26` | `200.47.132.129` – `200.47.132.190` | `200.47.132.191` |
 | 50 | `172.16.0.0/16` | `172.16.0.1` – `172.16.255.254` | `172.16.255.255` |
 | 99 | `192.168.100.0/24` | `192.168.100.1` – `192.168.100.254` | `192.168.100.255` |
 
@@ -90,10 +90,10 @@ A faculdade adquiriu o bloco **`200.47.132.0/22`** (faixa `200.47.132.0` a `200.
 | Dispositivo | Interface | Endereço IP | Máscara | Gateway |
 | --- | --- | --- | --- | --- |
 | RT-MATRIZ-BORDA | e0/0.2 (VLAN 2) | `200.47.132.62` | `255.255.255.192` | — |
-| RT-MATRIZ-BORDA | e0/0.10 (VLAN 10) | `200.47.132.126` | `255.255.255.192` | — |
-| RT-MATRIZ-BORDA | e0/0.20 (VLAN 20) | `200.47.132.190` | `255.255.255.192` | — |
-| RT-MATRIZ-BORDA | e0/0.30 (VLAN 30) | `200.47.132.254` | `255.255.255.192` | — |
-| RT-MATRIZ-BORDA | e0/0.40 (VLAN 40) | `200.47.133.62` | `255.255.255.192` | — |
+| RT-MATRIZ-BORDA | e0/0.10 (VLAN 10) | `200.47.134.62` | `255.255.255.192` | — |
+| RT-MATRIZ-BORDA | e0/0.20 (VLAN 20) | `200.47.133.62` | `255.255.255.192` | — |
+| RT-MATRIZ-BORDA | e0/0.30 (VLAN 30) | `200.47.135.62` | `255.255.255.192` | — |
+| RT-MATRIZ-BORDA | e0/0.40 (VLAN 40) | `200.47.132.190` | `255.255.255.192` | — |
 | RT-MATRIZ-BORDA | e0/0.50 (VLAN 50) | `172.16.255.254` | `255.255.0.0` | — |
 | RT-MATRIZ-BORDA | e0/0.99 (VLAN 99) | `192.168.100.254` | `255.255.255.0` | — |
 | RT-MATRIZ-BORDA | e0/1 (externa) | via DHCP | — | NAT da nuvem PNETLab |
@@ -113,10 +113,10 @@ Regra do enunciado: o roteador usa o **último IP** de cada VLAN; os switches re
 | VLAN | Sub-rede | Range do pool | Gateway (option routers) |
 | --- | --- | --- | --- |
 | 2 | 200.47.132.0/26 | 200.47.132.10 – 200.47.132.60 | 200.47.132.62 |
-| 10 | 200.47.132.64/26 | 200.47.132.65 – 200.47.132.125 | 200.47.132.126 |
-| 20 | 200.47.132.128/26 | 200.47.132.129 – 200.47.132.189 | 200.47.132.190 |
-| 30 | 200.47.132.192/26 | 200.47.132.193 – 200.47.132.253 | 200.47.132.254 |
-| 40 | 200.47.133.0/26 | 200.47.133.1 – 200.47.133.61 | 200.47.133.62 |
+| 10 | 200.47.134.0/26 | 200.47.134.1 – 200.47.134.61 | 200.47.134.62 |
+| 20 | 200.47.133.0/26 | 200.47.133.1 – 200.47.133.61 | 200.47.133.62 |
+| 30 | 200.47.135.0/26 | 200.47.135.1 – 200.47.135.61 | 200.47.135.62 |
+| 40 | 200.47.132.128/26 | 200.47.132.129 – 200.47.132.189 | 200.47.132.190 |
 | 50 | 172.16.0.0/16 | 172.16.100.10 – 172.16.100.200 | 172.16.255.254 |
 
 O bloco da **VLAN 2 é obrigatório** mesmo sem clientes: o `isc-dhcp-server` só inicializa com pelo menos uma sub-rede correspondente à interface que ele escuta (eth1). O DNS entregue aos clientes é `200.47.132.2` (e `8.8.8.8` como apoio).
@@ -142,7 +142,7 @@ Como o servidor DHCP está centralizado na VLAN 2 e atende às VLANs 10, 20, 30,
 ```
 interface GigabitEthernet0/0.10
  encapsulation dot1Q 10
- ip address 200.47.132.126 255.255.255.192
+ ip address 200.47.134.62 255.255.255.192
  ip mtu 1400
  ip tcp adjust-mss 1360
  ip helper-address 200.47.132.1
