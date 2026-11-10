@@ -278,6 +278,8 @@ Critério de sucesso: ícones de disponibilidade **SNMP (verde)** nos Ciscos, **
 
 **Sobre o `.vdi`:** imagens de VM geralmente superam o limite de 100 MB do Git. Prefira **Git LFS** (`git lfs install && git lfs track "*.vdi"`) ou publique o arquivo em um **Release do GitHub**, Google Drive ou similar e referencie o link aqui / no campo acima.
 
+**Download da imagem PNETLab (.vdi):** [Baixar `pnetlab-fafefifor.vdi` pelo Google Drive](https://drive.google.com/file/d/1uSeLyir-4pjch33Jb8Pfr9vIfw0Gy5rV/view?usp=sharing)
+
 ## Referências
 
 - Enunciado do projeto (`docs/descricao-projeto-pirc.pdf`)
